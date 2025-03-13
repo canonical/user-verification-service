@@ -15,8 +15,8 @@ jobs:
         with:
           node-version: 18
 
-      - name: Build js UI
-        run: make npm-build
+      # - name: Build js UI
+      #   run: make npm-build
 
       - name: Build Go code
         run: make test

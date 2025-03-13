@@ -30,7 +30,7 @@ parts:
       - make
       - git
     override-build: |
-      make npm-build build
+      make build
       install -D -m755 ./app ${CRAFT_PART_INSTALL}/opt/user-verification-service/bin/app
     organize:
       opt/user-verification-service/bin/app: usr/bin/user-verification-service
@@ -40,8 +40,6 @@ parts:
 
   deb-security-manifest:
     plugin: nil
-    after:
-      - certificates
     override-prime: |
       set -x
       mkdir -p $CRAFT_PRIME/usr/share/rocks/
