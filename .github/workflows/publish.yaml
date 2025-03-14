@@ -1,5 +1,5 @@
-name: container publish
-run-name: Publish container from ${{ inputs.rock }} to ghcr.io/canonical/user-verification-service
+name: image publish
+run-name: Publish ROCK image from ${{ inputs.rock }} to ghcr.io/canonical/user-verification-service
 
 on:
   workflow_call:
@@ -22,50 +22,66 @@ jobs:
     outputs:
       image: ${{ steps.set.outputs.image }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-    - name: Download Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: ${{ inputs.rock }}
+      - name: Download Artifact
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4
+        with:
+          name: ${{ inputs.rock }}
 
-    # Use the rockcraft snap to get skopeo because the snap and the apt package on the ubuntu
-    # archives are very old. Only rockcraft=latest/edge has a newer skopeo version
-    # TODO(nsklikas): Either use rockcraft=latest/stable or install skopeo from apt when one
-    # of them is updated
-    - name: Install Rockcraft to get skopeo
-      run: |
-        sudo snap install --classic --channel latest/edge rockcraft
+      # Use the rockcraft snap to get skopeo because the snap and the apt package on the ubuntu
+      # archives are very old. Only rockcraft=latest/edge has a newer skopeo version
+      # TODO: Either use rockcraft=latest/stable or install skopeo from apt when one
+      # of them is updated
+      - name: Install Rockcraft to get Skopeo
+        run: sudo snap install --classic --channel latest/edge rockcraft
 
-    - name: Install Container Structure Tests tools
-      run: |
-        mkdir -p bin/
-        curl -Lo bin/container-structure-test https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
-        chmod +x bin/container-structure-test
-        echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
-    - name: Run container structural tests
-      run: |
-        # docker-daemon avoids the push to the remote registry
-        sudo rockcraft.skopeo --insecure-policy copy oci-archive:$(realpath ./"${{ inputs.rock }}") docker-daemon:ghcr.io/canonical/user-verification-service:${{ github.sha }} --dest-creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
-        container-structure-test test -c structure-tests.yaml -i ghcr.io/canonical/user-verification-service:${{ github.sha }}
-    - name: Upload ROCK to ghcr.io with latest
-      id: latest
-      if: github.ref_type == 'branch'
-      run: |
-        sudo skopeo --insecure-policy copy oci-archive:$(realpath ./"${{ inputs.rock }}") docker://ghcr.io/canonical/user-verification-service:"${{ github.sha }}" --dest-creds "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
-        sudo skopeo --insecure-policy copy oci-archive:$(realpath ./"${{ inputs.rock }}") docker://ghcr.io/canonical/user-verification-service:latest --dest-creds "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
-        echo "image=ghcr.io/canonical/user-verification-service:${{ github.sha }}" >> "$GITHUB_ENV"
-    - name: Upload ROCK to ghcr.io with stable
-      id: stable
-      if: github.ref_type == 'tag'
-      run: |
-        sudo skopeo --insecure-policy copy oci-archive:$(realpath ./"${{ inputs.rock }}") docker://ghcr.io/canonical/user-verification-service:"${{ github.ref_name }}" --dest-creds "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
-        sudo skopeo --insecure-policy copy oci-archive:$(realpath ./"${{ inputs.rock }}") docker://ghcr.io/canonical/user-verification-service:stable --dest-creds "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}"
-        echo "image=ghcr.io/canonical/user-verification-service:${{ github.ref_name }}" >> "$GITHUB_ENV"
-    - name: Set output of image
-      id: set
-      run: echo "image=$image" >> "$GITHUB_OUTPUT"
+      - name: Install Skaffold and Container Structure Tests tools
+        run: |
+          mkdir -p bin/
+          curl -Lo bin/container-structure-test https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+          chmod +x bin/container-structure-test
+          echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
+      - name: Run container structural tests
+        run: |
+          # docker-daemon avoids the push to the remote registry
+          sudo rockcraft.skopeo --insecure-policy copy oci-archive:$(realpath ./"${{ inputs.rock }}") docker-daemon:ghcr.io/canonical/user-verification-service:${{ github.sha }} --dest-creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
+          container-structure-test test -c structure-tests.yaml -i ghcr.io/canonical/user-verification-service:${{ github.sha }}
+
+      - name: Upload ROCK to ghcr.io in latest channel
+        id: latest
+        if: ${{ github.ref_type }} == "branch"
+        run: |
+          versions=(latest "${{ github.sha }}")
+
+          for version in "${versions[@]}"; do
+            sudo rockcraft.skopeo --insecure-policy copy \
+              --dest-creds "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}" \
+              oci-archive:$(realpath ./"${{ inputs.rock }}") \
+              docker://ghcr.io/canonical/user-verification-service:"${version}"
+          done
+
+          echo "image=ghcr.io/canonical/user-verification-service:${{ github.sha }}" >> "$GITHUB_ENV"
+
+      - name: Upload ROCK to ghcr.io in stable channel
+        id: stable
+        if: ${{ github.ref_type }} == "tag"
+        run: |
+          versions=(stable "${{ github.ref_name }}")
+
+          for version in "${versions[@]}"; do
+            sudo rockcraft.skopeo --insecure-policy copy \
+              --dest-creds "${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}" \
+              oci-archive:$(realpath ./"${{ inputs.rock }}") \
+              docker://ghcr.io/canonical/user-verification-service:"${version}"
+          done
+
+          echo "image=ghcr.io/canonical/user-verification-service:${{ github.ref_name }}" >> "$GITHUB_ENV"
+
+      - name: Set output of image
+        id: set
+        run: echo "image=$image" >> "$GITHUB_OUTPUT"
 
   oci-factory:
     runs-on: ubuntu-latest
@@ -73,11 +89,11 @@ jobs:
     if: github.ref_type == 'tag'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Golang setup
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
-          go-version: '>=1.22.0'
+          go-version: ">=1.22.0"
       # install oci-factory via golang and set path in environment
       - name: Install oci-factory
         run: |
