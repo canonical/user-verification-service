@@ -1,5 +1,5 @@
+name: build
 run-name: Build steps for ${{ github.sha }} on ${{ github.ref_name }}
-
 
 on:
   workflow_call:
@@ -10,33 +10,33 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       rock: ${{ steps.set.outputs.rock }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-    - uses: canonical/craft-actions/rockcraft-pack@main
-      id: rockcraft
-    - name: Set rock output
-      id: set
-      run: echo "rock=${{ steps.rockcraft.outputs.rock }}" >> "$GITHUB_OUTPUT"
+      - uses: canonical/craft-actions/rockcraft-pack@main
+        id: rockcraft
+      - name: Set rock output
+        id: set
+        run: echo "rock=${{ steps.rockcraft.outputs.rock }}" >> "$GITHUB_OUTPUT"
 
-    - uses: actions/upload-artifact@v4
-      with:
-        path: ${{ steps.rockcraft.outputs.rock }}
-        name: ${{ steps.rockcraft.outputs.rock }}
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
+        with:
+          path: ${{ steps.rockcraft.outputs.rock }}
+          name: ${{ steps.rockcraft.outputs.rock }}
 
-    - name: Install Syft
-      run: |
-        curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
-    - name: Create SBOM
-      run: syft $(realpath ${{ steps.rockcraft.outputs.rock }}) -o spdx-json=user_verification_service.sbom.json
+      - name: Install Syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
-    - name: Upload SBOM
-      uses: actions/upload-artifact@v4
-      with:
-        name: user-verification-service-sbom
-        path: "user_verification_service.sbom.json"
+      - name: Create SBOM
+        run: syft $(realpath ${{ steps.rockcraft.outputs.rock }}) -o spdx-json=user_verification_service.sbom.json
 
+      - name: Upload SBOM
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
+        with:
+          name: user-verification-service-sbom
+          path: "user_verification_service.sbom.json"
