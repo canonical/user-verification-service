@@ -47,7 +47,7 @@ func serve() {
 
 	directoryAPI := directoryapi.NewClient(specs.DirectoryApiUrl)
 
-	router := web.NewRouter(directoryAPI, tracer, monitor, logger)
+	router := web.NewRouter(specs.ErrorUiUrl, specs.SupportEmail, directoryAPI, tracer, monitor, logger)
 	logger.Infof("Starting server on port %v", specs.Port)
 
 	srv := &http.Server{
