@@ -12,6 +12,8 @@ type EnvSpec struct {
 
 	Port    int    `envconfig:"port" default:"8080"`
 	BaseURL string `envconfig:"base_url" default:""`
+
+	DirectoryApiUrl string `envconfig:"directory_api_url" required:"true"`
 }
 
 type Flags struct {

@@ -3,15 +3,18 @@ package web
 import (
 	"net/http"
 
+	directoryapi "github.com/canonical/user-verification-service/internal/directory_api"
 	"github.com/canonical/user-verification-service/internal/logging"
 	"github.com/canonical/user-verification-service/internal/monitoring"
 	"github.com/canonical/user-verification-service/internal/tracing"
 	"github.com/canonical/user-verification-service/pkg/metrics"
+	userVerification "github.com/canonical/user-verification-service/pkg/user_verification"
 	chi "github.com/go-chi/chi/v5"
 	middleware "github.com/go-chi/chi/v5/middleware"
 )
 
 func NewRouter(
+	d directoryapi.DirectoryAPI,
 	tracer tracing.TracingInterface,
 	monitor monitoring.MonitorInterface,
 	logger logging.LoggerInterface,
@@ -35,6 +38,7 @@ func NewRouter(
 
 	router.Use(middlewares...)
 
+	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), logger).RegisterEndpoints(router)
 	metrics.NewAPI(logger).RegisterEndpoints(router)
 
 	return tracing.NewMiddleware(monitor, logger).OpenTelemetry(router)

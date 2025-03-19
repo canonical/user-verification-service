@@ -9,9 +9,15 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/canonical/user-verification-service/internal/config"
-	"github.com/canonical/user-verification-service/internal/logging"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/spf13/cobra"
+
+	"github.com/canonical/user-verification-service/internal/config"
+	directoryapi "github.com/canonical/user-verification-service/internal/directory_api"
+	"github.com/canonical/user-verification-service/internal/logging"
+	"github.com/canonical/user-verification-service/internal/monitoring/prometheus"
+	"github.com/canonical/user-verification-service/internal/tracing"
+	"github.com/canonical/user-verification-service/pkg/web"
 )
 
 var serveCmd = &cobra.Command{
@@ -29,13 +35,27 @@ func init() {
 
 func serve() {
 	specs := new(config.EnvSpec)
+	if err := envconfig.Process("", specs); err != nil {
+		panic(fmt.Errorf("issues with environment sourcing: %s", err))
+	}
+
 	logger := logging.NewLogger(specs.LogLevel)
+	logger.Debugf("env vars: %v", specs)
+
+	monitor := prometheus.NewMonitor("user-verification-service", logger)
+	tracer := tracing.NewTracer(tracing.NewConfig(specs.TracingEnabled, specs.OtelGRPCEndpoint, specs.OtelHTTPEndpoint, logger))
+
+	directoryAPI := directoryapi.NewClient(specs.DirectoryApiUrl)
+
+	router := web.NewRouter(directoryAPI, tracer, monitor, logger)
+	logger.Infof("Starting server on port %v", specs.Port)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf("0.0.0.0:%v", specs.Port),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
+		Handler:      router,
 	}
 
 	go func() {

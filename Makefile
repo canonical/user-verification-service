@@ -48,3 +48,6 @@ cmd/ui/dist:
 npm-build:
 	$(MAKE) -C ui/ build
 .PHONY: npm-build
+
+dev:
+	./start.sh
