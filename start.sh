@@ -40,4 +40,8 @@ docker run --network="host" -d --name=oidc_client --rm $HYDRA_IMAGE \
   --scope openid,profile,email,offline_access \
   --no-open --no-shutdown --format json
 
-DIRECTORY_API_URL="http://localhost" TRACING_ENABLED="false" go run . serve
+export DIRECTORY_API_URL="http://localhost"
+export ERROR_UI_URL="http://localhost:4455/ui/oidc_error"
+export SUPPORT_EMAIL="support@email.com"
+export TRACING_ENABLED="false"
+go run . serve

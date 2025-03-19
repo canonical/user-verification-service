@@ -14,6 +14,8 @@ import (
 )
 
 func NewRouter(
+	errorUiUrl,
+	supportEmail string,
 	d directoryapi.DirectoryAPI,
 	tracer tracing.TracingInterface,
 	monitor monitoring.MonitorInterface,
@@ -38,7 +40,7 @@ func NewRouter(
 
 	router.Use(middlewares...)
 
-	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), logger).RegisterEndpoints(router)
+	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), errorUiUrl, supportEmail, logger).RegisterEndpoints(router)
 	metrics.NewAPI(logger).RegisterEndpoints(router)
 
 	return tracing.NewMiddleware(monitor, logger).OpenTelemetry(router)
