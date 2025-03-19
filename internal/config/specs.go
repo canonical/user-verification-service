@@ -13,6 +13,9 @@ type EnvSpec struct {
 	Port    int    `envconfig:"port" default:"8080"`
 	BaseURL string `envconfig:"base_url" default:""`
 
+	ErrorUiUrl   string `envconfig:"error_ui_url" default:""`
+	SupportEmail string `envconfig:"support_email" default:""`
+
 	DirectoryApiUrl string `envconfig:"directory_api_url" required:"true"`
 }
 
