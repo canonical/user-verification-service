@@ -88,7 +88,7 @@ func NewTracer(cfg *Config) *Tracer {
 
 	// if tracing disabled skip the config
 	if !cfg.Enabled {
-		t.tracer = noop.NewTracerProvider().Tracer("github.com/canonical/user-verificatioin-service")
+		t.tracer = noop.NewTracerProvider().Tracer("github.com/canonical/user-verification-service")
 
 		return t
 	}
@@ -125,7 +125,7 @@ func NewTracer(cfg *Config) *Tracer {
 
 	// set tracer provider and propagator properly, this is to ensure all
 	// instrumentation library could run well
-	t.init("github.com/canonical/user-verificatioin-service", exporter)
+	t.init("github.com/canonical/user-verification-service", exporter)
 
 	return t
 }
