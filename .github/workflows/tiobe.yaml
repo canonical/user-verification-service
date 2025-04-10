@@ -30,7 +30,7 @@ jobs:
       # We could store a report from the regular run, but this is cheap to do and keeps this isolated.
       - name: Test and generate coverage report
         run: |
-          make npm-build test
+          make test
           gocov convert coverage.out > coverage.json
           # Annoyingly, the coverage.xml file needs to be in a .coverage folder.
           mkdir .coverage
