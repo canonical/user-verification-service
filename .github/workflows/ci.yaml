@@ -17,18 +17,28 @@ jobs:
   unit-test:
     uses: ./.github/workflows/unittest.yaml
   build:
-    uses: ./.github/workflows/build.yaml
-  publish:
-    if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
-    needs: [ build, unit-test ]
-    uses: ./.github/workflows/publish.yaml
+    uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@main
     with:
-      rock: ${{ needs.build.outputs.rock }}
-    secrets:
-      token: ${{ secrets.PAT_TOKEN }}
+      oci-archive-name: "user-verification-service"
+      rock-repo: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
+      rock-repo-commit: ${{ github.event_name == 'push' && github.ref_name || github.head_ref }}
+      rockfile-directory: .
+      arch-map: '{"amd64": ["self-hosted", "linux", "X64", "large", "jammy"]}'
+  test:
+    uses: canonical/oci-factory/.github/workflows/Test-Rock.yaml@main
+    needs: [build]
+    with:
+      oci-archive-name: "user-verification-service"
+  gh-publish:
+    if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
+    needs: [ build, unit-test, test ]
+    uses: canonical/identity-team/.github/workflows/_rock-gh-publish.yaml@v1.8.0
+    with:
+      rock: "user-verification-service"
+      structure-tests-enabled: true
   scan:
     if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
-    needs: publish
-    uses: ./.github/workflows/scan.yaml
+    needs: gh-publish
+    uses: canonical/identity-team/.github/workflows/_rock-scan.yaml@v1.8.0
     with:
-      image: ${{ needs.publish.outputs.image }}
+      image: ${{ needs.gh-publish.outputs.image }}
