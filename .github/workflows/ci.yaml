@@ -24,11 +24,16 @@ jobs:
       rock-repo-commit: ${{ github.event_name == 'push' && github.ref_name || github.head_ref }}
       rockfile-directory: .
       arch-map: '{"amd64": ["self-hosted", "linux", "X64", "large", "jammy"]}'
+    secrets:
+      source-github-token: ${{ secrets.PAT_TOKEN }}
+      host-github-token: ${{ secrets.PAT_TOKEN }}
   test:
     uses: canonical/oci-factory/.github/workflows/Test-Rock.yaml@main
     needs: [build]
     with:
       oci-archive-name: "user-verification-service"
+    secrets:
+      host-github-token: ${{ secrets.PAT_TOKEN }}
   gh-publish:
     if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
     needs: [ build, unit-test, test ]
