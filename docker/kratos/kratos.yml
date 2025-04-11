@@ -63,6 +63,12 @@ selfservice:
                         emit_analytics_event: true
                         response:
                           ignore: false
+                        auth:
+                          type: api_key
+                          config:
+                            name: Authorization
+                            value: secret_api_key
+                            in: header
                     - hook: session
                 webauthn:
                     hooks:

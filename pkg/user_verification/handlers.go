@@ -2,9 +2,7 @@ package user_verification
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/canonical/user-verification-service/internal/logging"
 	"github.com/go-chi/chi/v5"
@@ -16,8 +14,6 @@ const (
 	InvalidPayload ErrorID = 4200000 + iota
 	APICallFailure
 	NotInDirectory
-
-	UserVerificationErrorDescription = "Account could not be verified.\n\nContact support"
 )
 
 type WebhookPayload struct {
@@ -42,16 +38,17 @@ type WebhookErrorResponse struct {
 }
 
 type API struct {
-	service ServiceInterface
-
-	uiURL string
+	service    ServiceInterface
+	middleware *AuthMiddleware
 
 	logger logging.LoggerInterface
 }
 
 func (a *API) RegisterEndpoints(mux *chi.Mux) {
+	if a.middleware != nil {
+		mux = mux.With(a.middleware.AuthMiddleware).(*chi.Mux)
+	}
 	mux.Post("/api/v0/verify", a.handleVerify)
-	mux.Get("/ui/registration_error", a.handleRegistration)
 }
 
 func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
@@ -114,40 +111,13 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (a *API) registrationURL(ErrorUiUrl, supportEmail string) string {
-	u, err := url.Parse(ErrorUiUrl)
-	if err != nil {
-		panic(fmt.Errorf("invalid config login_ui_base_url: %v", err))
-	}
-
-	q := u.Query()
-	var errorDescription string
-	if supportEmail == "" {
-		errorDescription = UserVerificationErrorDescription
-	} else {
-		errorDescription = fmt.Sprintf("%v at %v", UserVerificationErrorDescription, supportEmail)
-	}
-
-	q.Add("error_description", errorDescription)
-	q.Add("error", "user_verification_failed")
-	u.RawQuery = q.Encode()
-	return u.String()
-}
-
-func (a *API) handleRegistration(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(
-		w,
-		r,
-		a.uiURL,
-		http.StatusSeeOther,
-	)
-}
-
-func NewAPI(service ServiceInterface, ErrorUiUrl, supportEmail string, logger logging.LoggerInterface) *API {
+func NewAPI(service ServiceInterface, middleware *AuthMiddleware, logger logging.LoggerInterface) *API {
 	a := new(API)
 
 	a.service = service
-	a.uiURL = a.registrationURL(ErrorUiUrl, supportEmail)
+	if middleware != nil {
+		a.middleware = middleware
+	}
 
 	a.logger = logger
 

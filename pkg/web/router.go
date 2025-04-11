@@ -9,6 +9,7 @@ import (
 	"github.com/canonical/user-verification-service/internal/tracing"
 	"github.com/canonical/user-verification-service/pkg/metrics"
 	"github.com/canonical/user-verification-service/pkg/status"
+	"github.com/canonical/user-verification-service/pkg/ui"
 	userVerification "github.com/canonical/user-verification-service/pkg/user_verification"
 	chi "github.com/go-chi/chi/v5"
 	middleware "github.com/go-chi/chi/v5/middleware"
@@ -16,7 +17,8 @@ import (
 
 func NewRouter(
 	errorUiUrl,
-	supportEmail string,
+	supportEmail,
+	token string,
 	d directoryapi.DirectoryAPI,
 	tracer tracing.TracingInterface,
 	monitor monitoring.MonitorInterface,
@@ -41,7 +43,13 @@ func NewRouter(
 
 	router.Use(middlewares...)
 
-	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), errorUiUrl, supportEmail, logger).RegisterEndpoints(router)
+	var authMiddleware *userVerification.AuthMiddleware = nil
+	if token != "" {
+		authMiddleware = userVerification.NewAuthMiddleware(token, tracer, logger)
+	}
+
+	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), authMiddleware, logger).RegisterEndpoints(router)
+	ui.NewAPI(errorUiUrl, supportEmail, logger).RegisterEndpoints(router)
 	metrics.NewAPI(logger).RegisterEndpoints(router)
 	status.NewAPI(tracer, monitor, logger).RegisterEndpoints(router)
 
