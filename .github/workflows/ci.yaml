@@ -41,10 +41,9 @@ jobs:
     with:
       rock: "user-verification-service"
       structure-tests-enabled: true
-  # codeql actions are not enabled for internal repos
-  # scan:
-  #   if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
-  #   needs: gh-publish
-  #   uses: canonical/identity-team/.github/workflows/_rock-scan.yaml@v1.8.0
-  #   with:
-  #     image: ${{ needs.gh-publish.outputs.image }}
+  scan:
+    if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
+    needs: gh-publish
+    uses: canonical/identity-team/.github/workflows/_rock-scan.yaml@v1.8.0
+    with:
+      image: ${{ needs.gh-publish.outputs.image }}
