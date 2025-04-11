@@ -17,7 +17,8 @@ import (
 
 func NewRouter(
 	errorUiUrl,
-	supportEmail string,
+	supportEmail,
+	token string,
 	d directoryapi.DirectoryAPI,
 	tracer tracing.TracingInterface,
 	monitor monitoring.MonitorInterface,
@@ -42,7 +43,12 @@ func NewRouter(
 
 	router.Use(middlewares...)
 
-	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), logger).RegisterEndpoints(router)
+	var authMiddleware *userVerification.AuthMiddleware = nil
+	if token != "" {
+		authMiddleware = userVerification.NewAuthMiddleware(token, tracer, logger)
+	}
+
+	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), authMiddleware, logger).RegisterEndpoints(router)
 	ui.NewAPI(errorUiUrl, supportEmail, logger).RegisterEndpoints(router)
 	metrics.NewAPI(logger).RegisterEndpoints(router)
 	status.NewAPI(tracer, monitor, logger).RegisterEndpoints(router)

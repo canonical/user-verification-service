@@ -8,7 +8,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/canonical/user-verification-service/internal/logging"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/mock/gomock"
 )
@@ -58,11 +57,16 @@ func TestHandleVerify(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			logger := logging.NewLogger("DEBUG")
+			mockLogger := NewMockLoggerInterface(ctrl)
 			mockService := NewMockServiceInterface(ctrl)
 
 			if test.result != nil {
 				mockService.EXPECT().IsEmployee(gomock.Any(), test.input).Times(1).Return(test.result.r, test.result.err)
+			}
+
+			if test.expectedStatus != http.StatusOK {
+				mockLogger.EXPECT().Error(gomock.Any(), gomock.Any()).AnyTimes()
+				mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
 			}
 
 			body := []byte("")
@@ -72,7 +76,7 @@ func TestHandleVerify(t *testing.T) {
 			req := httptest.NewRequest(http.MethodPost, "/api/v0/verify", bytes.NewBuffer(body))
 
 			mux := chi.NewMux()
-			NewAPI(mockService, logger).RegisterEndpoints(mux)
+			NewAPI(mockService, nil, mockLogger).RegisterEndpoints(mux)
 			w := httptest.NewRecorder()
 
 			mux.ServeHTTP(w, req)

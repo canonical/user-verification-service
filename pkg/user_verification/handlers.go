@@ -38,12 +38,16 @@ type WebhookErrorResponse struct {
 }
 
 type API struct {
-	service ServiceInterface
+	service    ServiceInterface
+	middleware *AuthMiddleware
 
 	logger logging.LoggerInterface
 }
 
 func (a *API) RegisterEndpoints(mux *chi.Mux) {
+	if a.middleware != nil {
+		mux = mux.With(a.middleware.AuthMiddleware).(*chi.Mux)
+	}
 	mux.Post("/api/v0/verify", a.handleVerify)
 }
 
@@ -107,10 +111,13 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func NewAPI(service ServiceInterface, logger logging.LoggerInterface) *API {
+func NewAPI(service ServiceInterface, middleware *AuthMiddleware, logger logging.LoggerInterface) *API {
 	a := new(API)
 
 	a.service = service
+	if middleware != nil {
+		a.middleware = middleware
+	}
 
 	a.logger = logger
 

@@ -44,4 +44,6 @@ export DIRECTORY_API_URL="http://localhost"
 export ERROR_UI_URL="http://localhost:4455/ui/oidc_error"
 export SUPPORT_EMAIL="support@email.com"
 export TRACING_ENABLED="false"
+export LOG_LEVEL="debug"
+export API_TOKEN="secret_api_key"
 go run . serve
