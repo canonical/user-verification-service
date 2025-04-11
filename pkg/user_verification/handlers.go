@@ -78,7 +78,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 
 	isEmployee, err := a.service.IsEmployee(r.Context(), payload.Email)
 	if err != nil {
-		a.logger.Errorf("Failed to check if user is employee: %v", payload.Email, err)
+		a.logger.Errorf("Failed to check if user '%v' is employee: %v", payload.Email, err)
 		w.WriteHeader(http.StatusForbidden)
 		json.NewEncoder(w).Encode(
 			WebhookErrorResponse{
@@ -95,6 +95,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !isEmployee {
+		a.logger.Errorf("User '%v' is not an employee", payload.Email)
 		w.WriteHeader(http.StatusForbidden)
 		json.NewEncoder(w).Encode(
 			WebhookErrorResponse{
