@@ -17,6 +17,7 @@ jobs:
   unit-test:
     uses: ./.github/workflows/unittest.yaml
   build:
+    name: Build
     uses: canonical/oci-factory/.github/workflows/Build-Rock.yaml@main
     with:
       oci-archive-name: "user-verification-service"
@@ -29,6 +30,7 @@ jobs:
       host-github-token: ${{ secrets.PAT_TOKEN }}
   test:
     uses: canonical/oci-factory/.github/workflows/Test-Rock.yaml@main
+    name: Test Rock
     needs: [build]
     with:
       oci-archive-name: "user-verification-service"
