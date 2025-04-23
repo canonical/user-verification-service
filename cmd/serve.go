@@ -45,7 +45,7 @@ func serve() {
 	monitor := prometheus.NewMonitor("user-verification-service", logger)
 	tracer := tracing.NewTracer(tracing.NewConfig(specs.TracingEnabled, specs.OtelGRPCEndpoint, specs.OtelHTTPEndpoint, logger))
 
-	directoryAPI := directoryapi.NewClient(specs.DirectoryApiUrl)
+	directoryAPI := directoryapi.NewClient(specs.SkipTlsVerification, specs.DirectoryApiUrl, specs.DirectoryApiToken, tracer, monitor, logger)
 
 	router := web.NewRouter(specs.ErrorUiUrl, specs.SupportEmail, specs.ApiToken, directoryAPI, tracer, monitor, logger)
 	logger.Infof("Starting server on port %v", specs.Port)
