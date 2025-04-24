@@ -52,7 +52,7 @@ func serve() {
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf("0.0.0.0:%v", specs.Port),
-		WriteTimeout: time.Second * 15,
+		WriteTimeout: time.Second * 60,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
 		Handler:      router,
