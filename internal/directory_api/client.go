@@ -5,6 +5,8 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/canonical/user-verification-service/internal/logging"
 	"github.com/canonical/user-verification-service/internal/monitoring"
@@ -26,6 +28,32 @@ type Client struct {
 	logger  logging.LoggerInterface
 }
 
+func (c *Client) doAndMonitor(r *http.Request, mail string) (*http.Response, error) {
+	startTime := time.Now()
+	rr, err := c.http.Do(r)
+
+	var tags map[string]string
+	if err != nil {
+		tags = map[string]string{
+			"user":   mail,
+			"status": "nil",
+		}
+	} else if rr.StatusCode != http.StatusOK {
+		tags = map[string]string{
+			"user":   mail,
+			"status": strconv.Itoa(rr.StatusCode),
+		}
+	} else {
+		tags = map[string]string{
+			"user":   "*",
+			"status": strconv.Itoa(rr.StatusCode),
+		}
+	}
+	c.monitor.SetDirectoryApiResponseTimeMetric(tags, time.Since(startTime).Seconds())
+
+	return rr, err
+}
+
 func (c *Client) IsEmployee(ctx context.Context, mail string) (bool, error) {
 	r, err := http.NewRequestWithContext(ctx, "GET", c.url, nil)
 	if err != nil {
@@ -38,7 +66,7 @@ func (c *Client) IsEmployee(ctx context.Context, mail string) (bool, error) {
 	q.Add("email", mail)
 	r.URL.RawQuery = q.Encode()
 
-	rr, err := c.http.Do(r)
+	rr, err := c.doAndMonitor(r, mail)
 	if err != nil {
 		return false, err
 	}
