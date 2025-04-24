@@ -41,6 +41,7 @@ docker run --network="host" -d --name=oidc_client --rm $HYDRA_IMAGE \
   --scope openid,profile,email,offline_access \
   --no-open --no-shutdown --format json
 
+export UI_BASE_URL="http://localhost:8080/some/path"
 export ERROR_UI_URL="http://localhost:4455/ui/oidc_error"
 export SUPPORT_EMAIL="support@email.com"
 export TRACING_ENABLED="false"

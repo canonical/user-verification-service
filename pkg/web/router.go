@@ -1,7 +1,9 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
 
 	directoryapi "github.com/canonical/user-verification-service/internal/directory_api"
 	"github.com/canonical/user-verification-service/internal/logging"
@@ -15,10 +17,25 @@ import (
 	middleware "github.com/go-chi/chi/v5/middleware"
 )
 
+func parseBaseURL(baseUrl string) *url.URL {
+	if baseUrl[len(baseUrl)-1] != '/' {
+		baseUrl += "/"
+	}
+
+	// Check if has app suburl.
+	u, err := url.Parse(baseUrl)
+	if err != nil {
+		panic(fmt.Errorf("invalid BASE_URL: %v", err))
+	}
+
+	return u
+}
+
 func NewRouter(
 	errorUiUrl,
 	supportEmail,
-	token string,
+	token,
+	uiBaseURL string,
 	d directoryapi.DirectoryAPI,
 	tracer tracing.TracingInterface,
 	monitor monitoring.MonitorInterface,
@@ -48,10 +65,18 @@ func NewRouter(
 		authMiddleware = userVerification.NewAuthMiddleware(token, tracer, logger)
 	}
 
+	uiRouter := chi.NewMux()
+
 	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), authMiddleware, logger).RegisterEndpoints(router)
-	ui.NewAPI(errorUiUrl, supportEmail, logger).RegisterEndpoints(router)
+	ui.NewAPI(errorUiUrl, supportEmail, logger).RegisterEndpoints(uiRouter)
 	metrics.NewAPI(logger).RegisterEndpoints(router)
 	status.NewAPI(tracer, monitor, logger).RegisterEndpoints(router)
+
+	router.Mount("/", uiRouter)
+	if uiBaseURL != "" {
+		u := parseBaseURL(uiBaseURL)
+		router.Mount(u.Path, uiRouter)
+	}
 
 	return tracing.NewMiddleware(monitor, logger).OpenTelemetry(router)
 }

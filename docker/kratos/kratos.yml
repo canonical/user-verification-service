@@ -50,7 +50,7 @@ selfservice:
                 webauthn:
                     default_browser_return_url: http://localhost:4455/ui/setup_passkey
         registration:
-            ui_url: http://localhost:8080/ui/registration_error
+            ui_url: http://localhost:8080/some/path/ui/registration_error
             after:
                 oidc:
                     hooks:
