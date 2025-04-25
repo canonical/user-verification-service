@@ -5,6 +5,7 @@ set -e
 
 cleanup () {
   docker compose -f ./docker-compose.dev.yml  down
+  docker stop oidc_client
   exit
 }
 
@@ -40,10 +41,11 @@ docker run --network="host" -d --name=oidc_client --rm $HYDRA_IMAGE \
   --scope openid,profile,email,offline_access \
   --no-open --no-shutdown --format json
 
-export DIRECTORY_API_URL="http://localhost"
 export ERROR_UI_URL="http://localhost:4455/ui/oidc_error"
 export SUPPORT_EMAIL="support@email.com"
 export TRACING_ENABLED="false"
 export LOG_LEVEL="debug"
 export API_TOKEN="secret_api_key"
+export DIRECTORY_API_TOKEN="change-me"
+export DIRECTORY_API_URL="change-me"
 go run . serve

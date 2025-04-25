@@ -28,12 +28,12 @@ func TestHandleRegistrationError(t *testing.T) {
 			name:         "Should include the email",
 			supportEmail: "contact@support.com",
 			errorURL:     "http://path/to/error",
-			expectedURL:  "http://path/to/error?error=user_verification_failed&error_description=Account+could+not+be+verified.%0A%0AContact+support+at+contact%40support.com",
+			expectedURL:  "http://path/to/error?error=user_verification_failed&error_description=Account+could+not+be+verified.%0A%0APlease+try+to+log+in+again+or+contact+support+at+contact%40support.com",
 		},
 		{
 			name:        "Should not include the email",
 			errorURL:    "http://path/to/error",
-			expectedURL: "http://path/to/error?error=user_verification_failed&error_description=Account+could+not+be+verified.%0A%0AContact+support",
+			expectedURL: "http://path/to/error?error=user_verification_failed&error_description=Account+could+not+be+verified.%0A%0APlease+try+to+log+in+again+or+contact+support",
 		},
 	}
 

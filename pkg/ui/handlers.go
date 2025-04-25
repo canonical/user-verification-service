@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-const UserVerificationErrorDescription = "Account could not be verified.\n\nContact support"
+const UserVerificationErrorDescription = "Account could not be verified.\n\nPlease try to log in again or contact support"
 
 type API struct {
 	uiURL string

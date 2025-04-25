@@ -17,7 +17,9 @@ type EnvSpec struct {
 	ErrorUiUrl   string `envconfig:"error_ui_url" default:""`
 	SupportEmail string `envconfig:"support_email" default:""`
 
-	DirectoryApiUrl string `envconfig:"directory_api_url" required:"true"`
+	SkipTlsVerification bool   `envconfig:"skip_tls_verification" default:"false"`
+	DirectoryApiToken   string `envconfig:"directory_api_token" default:""`
+	DirectoryApiUrl     string `envconfig:"directory_api_url" required:""`
 }
 
 type Flags struct {
