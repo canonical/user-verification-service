@@ -39,13 +39,13 @@ jobs:
   gh-publish:
     if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
     needs: [ build, unit-test, test ]
-    uses: canonical/identity-team/.github/workflows/_rock-gh-publish.yaml@74923c8fd716e55207cf19359621902c45b24b52 # v1.8.2
+    uses: canonical/identity-team/.github/workflows/_rock-gh-publish.yaml@6980fa34b31ca8631e6cb2d57980e7e035697a31 # v1.8.5
     with:
       rock: "user-verification-service"
       structure-tests-enabled: true
   scan:
     if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
     needs: gh-publish
-    uses: canonical/identity-team/.github/workflows/_rock-scan.yaml@74923c8fd716e55207cf19359621902c45b24b52 # v1.8.2
+    uses: canonical/identity-team/.github/workflows/_rock-scan.yaml@6980fa34b31ca8631e6cb2d57980e7e035697a31 # v1.8.5
     with:
       image: ${{ needs.gh-publish.outputs.image }}
