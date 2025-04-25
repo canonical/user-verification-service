@@ -10,8 +10,8 @@ type EnvSpec struct {
 
 	LogLevel string `envconfig:"log_level" default:"error"`
 
-	Port    int    `envconfig:"port" default:"8080"`
-	BaseURL string `envconfig:"base_url" default:""`
+	Port      int    `envconfig:"port" default:"8080"`
+	UiBaseURL string `envconfig:"ui_base_url" default:""`
 
 	ApiToken     string `envconfig:"api_token" default:""`
 	ErrorUiUrl   string `envconfig:"error_ui_url" default:""`
