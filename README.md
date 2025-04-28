@@ -93,3 +93,8 @@ make dev
 
 To test it, you can use a dummy app deployed on port 4446. Open your browser and go to:
 http://127.0.0.1:4446/
+
+## Security
+
+Please see [SECURITY.md](https://github.com/canonical/user-verification-service/blob/main/SECURITY.md)
+for guidelines on reporting security issues.
