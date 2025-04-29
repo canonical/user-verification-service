@@ -68,12 +68,12 @@ func NewRouter(
 	uiRouter := chi.NewMux()
 
 	userVerification.NewAPI(userVerification.NewService(d, tracer, monitor, logger), authMiddleware, logger).RegisterEndpoints(router)
-	ui.NewAPI(errorUiUrl, supportEmail, logger).RegisterEndpoints(uiRouter)
+	ui.NewAPI(errorUiUrl, supportEmail, logger).RegisterEndpoints(router)
 	metrics.NewAPI(logger).RegisterEndpoints(router)
 	status.NewAPI(tracer, monitor, logger).RegisterEndpoints(router)
 
-	router.Mount("/", uiRouter)
 	if uiBaseURL != "" {
+		ui.NewAPI(errorUiUrl, supportEmail, logger).RegisterEndpoints(uiRouter)
 		u := parseBaseURL(uiBaseURL)
 		router.Mount(u.Path, uiRouter)
 	}
