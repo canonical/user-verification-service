@@ -10,14 +10,25 @@ import (
 type Monitor struct {
 	service string
 
-	responseTime           *prometheus.HistogramVec
-	dependencyAvailability *prometheus.GaugeVec
+	directoryApiResponseTime *prometheus.HistogramVec
+	responseTime             *prometheus.HistogramVec
+	dependencyAvailability   *prometheus.GaugeVec
 
 	logger logging.LoggerInterface
 }
 
 func (m *Monitor) GetService() string {
 	return m.service
+}
+
+func (m *Monitor) SetDirectoryApiResponseTimeMetric(tags map[string]string, value float64) error {
+	if m.directoryApiResponseTime == nil {
+		return fmt.Errorf("metric not instantiated")
+	}
+
+	m.directoryApiResponseTime.With(tags).Observe(value)
+
+	return nil
 }
 
 func (m *Monitor) SetResponseTimeMetric(tags map[string]string, value float64) error {
@@ -56,14 +67,23 @@ func (m *Monitor) registerHistograms() {
 		[]string{"route", "status"},
 	)
 
-	histograms = append(histograms, m.responseTime)
+	m.directoryApiResponseTime = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Name:        "directory_api_response_time_seconds",
+			Help:        "directory_api_response_time_seconds",
+			ConstLabels: labels,
+		},
+		[]string{"status", "user"},
+	)
+
+	histograms = append(histograms, m.responseTime, m.directoryApiResponseTime)
 
 	for _, histogram := range histograms {
 		err := prometheus.Register(histogram)
 
 		switch err.(type) {
 		case nil:
-			return
+			continue
 		case prometheus.AlreadyRegisteredError:
 			m.logger.Debugf("metric %v already registered", histogram)
 		default:
@@ -95,7 +115,7 @@ func (m *Monitor) registerGauges() {
 
 		switch err.(type) {
 		case nil:
-			return
+			continue
 		case prometheus.AlreadyRegisteredError:
 			m.logger.Debugf("metric %v already registered", gauge)
 		default:

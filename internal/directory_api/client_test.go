@@ -80,6 +80,8 @@ func TestIsEmployee(t *testing.T) {
 			c := NewClient(false, "https://some-url", "token", mockTracer, mockMonitor, logger)
 			c.http = test.mockedHttpClient(mockHttp)
 
+			mockMonitor.EXPECT().SetDirectoryApiResponseTimeMetric(gomock.Any(), gomock.Any()).AnyTimes()
+
 			e, err := c.IsEmployee(t.Context(), "e@mail.com")
 
 			if e != test.expectedResult {

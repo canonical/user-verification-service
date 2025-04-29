@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/canonical/user-verification-service/internal/logging"
@@ -36,7 +37,7 @@ func (mdw *Middleware) ResponseTime() func(http.Handler) http.Handler {
 
 				tags := map[string]string{
 					"route":  fmt.Sprintf("%s%s", r.Method, mdw.regex.ReplaceAll([]byte(r.URL.Path), []byte("id"))),
-					"status": fmt.Sprint(ww.Status()),
+					"status": strconv.Itoa(ww.Status()),
 				}
 
 				mdw.monitor.SetResponseTimeMetric(tags, time.Since(startTime).Seconds())
