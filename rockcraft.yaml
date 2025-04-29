@@ -1,7 +1,7 @@
 name: user-verification-service
 base: bare
 build-base: ubuntu@22.04
-version: 0.2.0
+version: 0.3.0
 summary: Canonical Identity platform User Verification Service
 description: >
   This is the Canonical Identity platform User Verification Service used for
