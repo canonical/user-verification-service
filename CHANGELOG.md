@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0](https://github.com/canonical/user-verification-service/compare/v0.2.0...v0.3.0) (2025-04-29)
+
+
+### Features
+
+* add directory API client implementation ([87a8c40](https://github.com/canonical/user-verification-service/commit/87a8c40a8f313d9abf9cd5f09512d90971ff73ca))
+
+
+### Bug Fixes
+
+* add prom metric for directory API responses ([5eec20b](https://github.com/canonical/user-verification-service/commit/5eec20b265635088c95f149099498bbc5acbacc3))
+* **deps:** update module go.uber.org/mock to v0.5.2 ([0d76353](https://github.com/canonical/user-verification-service/commit/0d76353d504e572aa8481108012d4e58b6c6d16e))
+* **deps:** update module go.uber.org/mock to v0.5.2 ([09f7668](https://github.com/canonical/user-verification-service/commit/09f76687162cd03c9cc1eee1e36b0bf212ae769d))
+* increase write timeout ([c2b6bfc](https://github.com/canonical/user-verification-service/commit/c2b6bfc8a44751cab2db0b18130517647ccaeb20))
+* serve UI under subpath ([3f4c831](https://github.com/canonical/user-verification-service/commit/3f4c831ab155253e1b4370361983970b611d3962))
+* update error message ([7194926](https://github.com/canonical/user-verification-service/commit/7194926d3c0266c686d6748399ca0af6d0f5860b))
+* use itoa instead of format ([64282b5](https://github.com/canonical/user-verification-service/commit/64282b5189a6264e9e35b2253df43c57fc9f7047))
+
 ## [0.2.0](https://github.com/canonical/user-verification-service/compare/v0.1.0...v0.2.0) (2025-04-14)
 
 
