@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/canonical/user-verification-service/compare/v0.3.0...v0.3.1) (2025-04-29)
+
+
+### Bug Fixes
+
+* fix routing ([eded5b7](https://github.com/canonical/user-verification-service/commit/eded5b72618cca176b4f77b3ea04b00e13057ce4))
+
 ## [0.3.0](https://github.com/canonical/user-verification-service/compare/v0.2.0...v0.3.0) (2025-04-29)
 
 
