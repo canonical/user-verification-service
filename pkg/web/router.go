@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"net/url"
 
-	directoryapi "github.com/canonical/user-verification-service/internal/directory_api"
 	"github.com/canonical/user-verification-service/internal/logging"
 	"github.com/canonical/user-verification-service/internal/monitoring"
+	"github.com/canonical/user-verification-service/internal/salesforce"
 	"github.com/canonical/user-verification-service/internal/tracing"
 	"github.com/canonical/user-verification-service/pkg/metrics"
 	"github.com/canonical/user-verification-service/pkg/status"
@@ -36,7 +36,7 @@ func NewRouter(
 	supportEmail,
 	token,
 	uiBaseURL string,
-	d directoryapi.DirectoryAPI,
+	d salesforce.SalesforceAPI,
 	tracer tracing.TracingInterface,
 	monitor monitoring.MonitorInterface,
 	logger logging.LoggerInterface,

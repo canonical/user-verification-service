@@ -10,9 +10,9 @@ import (
 type Monitor struct {
 	service string
 
-	directoryApiResponseTime *prometheus.HistogramVec
-	responseTime             *prometheus.HistogramVec
-	dependencyAvailability   *prometheus.GaugeVec
+	salesforceResponseTime *prometheus.HistogramVec
+	responseTime           *prometheus.HistogramVec
+	dependencyAvailability *prometheus.GaugeVec
 
 	logger logging.LoggerInterface
 }
@@ -21,12 +21,12 @@ func (m *Monitor) GetService() string {
 	return m.service
 }
 
-func (m *Monitor) SetDirectoryApiResponseTimeMetric(tags map[string]string, value float64) error {
-	if m.directoryApiResponseTime == nil {
+func (m *Monitor) SetSalesforceResponseTimeMetric(tags map[string]string, value float64) error {
+	if m.salesforceResponseTime == nil {
 		return fmt.Errorf("metric not instantiated")
 	}
 
-	m.directoryApiResponseTime.With(tags).Observe(value)
+	m.salesforceResponseTime.With(tags).Observe(value)
 
 	return nil
 }
@@ -67,16 +67,16 @@ func (m *Monitor) registerHistograms() {
 		[]string{"route", "status"},
 	)
 
-	m.directoryApiResponseTime = prometheus.NewHistogramVec(
+	m.salesforceResponseTime = prometheus.NewHistogramVec(
 		prometheus.HistogramOpts{
-			Name:        "directory_api_response_time_seconds",
-			Help:        "directory_api_response_time_seconds",
+			Name:        "salesforce_response_time_seconds",
+			Help:        "salesforce_response_time_seconds",
 			ConstLabels: labels,
 		},
-		[]string{"status", "user"},
+		[]string{"error", "user"},
 	)
 
-	histograms = append(histograms, m.responseTime, m.directoryApiResponseTime)
+	histograms = append(histograms, m.responseTime, m.salesforceResponseTime)
 
 	for _, histogram := range histograms {
 		err := prometheus.Register(histogram)

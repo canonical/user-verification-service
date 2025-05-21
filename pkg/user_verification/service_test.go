@@ -14,7 +14,7 @@ import (
 //go:generate mockgen -build_flags=--mod=mod -package user_verification -destination ./mock_user_verification.go -source=./interfaces.go
 //go:generate mockgen -build_flags=--mod=mod -package user_verification -destination ./mock_monitor.go -source=../../internal/monitoring/interfaces.go
 //go:generate mockgen -build_flags=--mod=mod -package user_verification -destination ./mock_tracing.go -source=../../internal/tracing/interfaces.go
-//go:generate mockgen -build_flags=--mod=mod -package user_verification -destination ./mock_directory_api.go -source=../../internal/directory_api/interfaces.go
+//go:generate mockgen -build_flags=--mod=mod -package user_verification -destination ./mock_salesforce.go -source=../../internal/salesforce/interfaces.go
 
 func TestServiceIsEmployee(t *testing.T) {
 	dummyError := errors.New("some error")
@@ -61,12 +61,12 @@ func TestServiceIsEmployee(t *testing.T) {
 			mockLogger := NewMockLoggerInterface(ctrl)
 			mockTracer := NewMockTracingInterface(ctrl)
 			mockMonitor := monitoring.NewMockMonitorInterface(ctrl)
-			mockDirectoryAPI := NewMockDirectoryAPI(ctrl)
+			mockSalesforce := NewMockSalesforceAPI(ctrl)
 
 			mockTracer.EXPECT().Start(gomock.Any(), "user_verification.Service.IsEmployee").Times(1).Return(context.TODO(), trace.SpanFromContext(context.TODO()))
-			mockDirectoryAPI.EXPECT().IsEmployee(gomock.Any(), test.input).Times(1).Return(test.mockedServiceResult, test.mockedServiceError)
+			mockSalesforce.EXPECT().IsEmployee(gomock.Any(), test.input).Times(1).Return(test.mockedServiceResult, test.mockedServiceError)
 
-			s := NewService(mockDirectoryAPI, mockTracer, mockMonitor, mockLogger)
+			s := NewService(mockSalesforce, mockTracer, mockMonitor, mockLogger)
 
 			b, err := s.IsEmployee(context.TODO(), test.input)
 

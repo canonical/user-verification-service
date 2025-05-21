@@ -30,7 +30,9 @@ At the moment the application is sourcing the following from the environment:
 - `LOG_LEVEL` - log level, defaults to `error`
 - `PORT` - HTTP server port, defaults to `8080`
 - `BASE_URL` - the base url that the application will be running on
-- `DIRECTORY_API_URL` - the url of the Directory API
+- `SALESFORCE_CONSUMER_KEY` - the salesforce consumer key
+- `SALESFORCE_CONSUMER_SECRET` - the salesforce consumer secret
+- `SALESFORCE_DOMAIN` - the salesforce domain (e.g. `https://test.salesforce.com`)
 
 ### Container
 
@@ -61,7 +63,9 @@ docker run -d \
   --rm \
   -p 8080:8080 \
   --name user-verification-service \
-  -e DIRECTORY_API_URL="http://localhost" \
+  -e SALESFORCE_CONSUMER_KEY="consumer-key" \
+  -e SALESFORCE_CONSUMER_SECRET="consumer-secret" \
+  -e SALESFORCE_DOMAIN="https://test.salesforce.com" \
   localhost:32000/user-verification-service:registry start user-verification-service
 ```
 
