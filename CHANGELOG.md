@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0](https://github.com/canonical/user-verification-service/compare/v0.3.1...v0.4.0) (2025-05-22)
+
+
+### Features
+
+* move from directory API to salesforce ([735b7b6](https://github.com/canonical/user-verification-service/commit/735b7b6727f2e6d71a8e8395840394cfe979c5f8))
+
+
+### Bug Fixes
+
+* copy payload on success ([cf07103](https://github.com/canonical/user-verification-service/commit/cf071035161a7750f9fb663c9fb60ee22e72e1a9))
+* **deps:** update go deps to v1.36.0 ([36b861d](https://github.com/canonical/user-verification-service/commit/36b861df45eeba04d9a0e984b839c92f40e48175))
+* **deps:** update go deps to v1.36.0 (minor) ([ff54135](https://github.com/canonical/user-verification-service/commit/ff54135e7cfebf2b6fc743dbf8a8e1e173ee94d2))
+
 ## [0.3.1](https://github.com/canonical/user-verification-service/compare/v0.3.0...v0.3.1) (2025-04-29)
 
 
