@@ -25,14 +25,14 @@ func (s *Service) IsEmployee(ctx context.Context, email string) (bool, error) {
 }
 
 func NewService(
-	d salesforce.SalesforceAPI,
+	sf salesforce.SalesforceAPI,
 	tracer tracing.TracingInterface,
 	monitor monitoring.MonitorInterface,
 	logger logging.LoggerInterface,
 ) *Service {
 	s := new(Service)
 
-	s.salesforce = d
+	s.salesforce = sf
 
 	s.monitor = monitor
 	s.tracer = tracer
