@@ -13,7 +13,7 @@ type ErrorID int
 const (
 	InvalidPayload ErrorID = 4200000 + iota
 	APICallFailure
-	NotInDirectory
+	NotFound
 )
 
 type WebhookPayload struct {
@@ -82,7 +82,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 				Messages: []errorMessage{{
 					DetailedMessages: []detailedMessage{{
 						ID:   APICallFailure,
-						Text: "Failed to call the directory API",
+						Text: "Failed to call the salesforce API",
 						Type: "error",
 					}},
 				}},
@@ -99,7 +99,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 				Messages: []errorMessage{{
 					InstancePtr: "#/traits/email",
 					DetailedMessages: []detailedMessage{{
-						ID:   NotInDirectory,
+						ID:   NotFound,
 						Text: "User is not an employee",
 						Type: "error",
 					}},
@@ -109,6 +109,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(payload)
 }
 
 func NewAPI(service ServiceInterface, middleware *AuthMiddleware, logger logging.LoggerInterface) *API {

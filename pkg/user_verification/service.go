@@ -3,14 +3,14 @@ package user_verification
 import (
 	"context"
 
-	directoryapi "github.com/canonical/user-verification-service/internal/directory_api"
 	"github.com/canonical/user-verification-service/internal/logging"
 	"github.com/canonical/user-verification-service/internal/monitoring"
+	"github.com/canonical/user-verification-service/internal/salesforce"
 	"github.com/canonical/user-verification-service/internal/tracing"
 )
 
 type Service struct {
-	directoryAPI directoryapi.DirectoryAPI
+	salesforce salesforce.SalesforceAPI
 
 	tracer  tracing.TracingInterface
 	monitor monitoring.MonitorInterface
@@ -21,18 +21,18 @@ func (s *Service) IsEmployee(ctx context.Context, email string) (bool, error) {
 	ctx, span := s.tracer.Start(ctx, "user_verification.Service.IsEmployee")
 	defer span.End()
 
-	return s.directoryAPI.IsEmployee(ctx, email)
+	return s.salesforce.IsEmployee(ctx, email)
 }
 
 func NewService(
-	d directoryapi.DirectoryAPI,
+	d salesforce.SalesforceAPI,
 	tracer tracing.TracingInterface,
 	monitor monitoring.MonitorInterface,
 	logger logging.LoggerInterface,
 ) *Service {
 	s := new(Service)
 
-	s.directoryAPI = d
+	s.salesforce = d
 
 	s.monitor = monitor
 	s.tracer = tracer

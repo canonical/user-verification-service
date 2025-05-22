@@ -17,9 +17,9 @@ type EnvSpec struct {
 	ErrorUiUrl   string `envconfig:"error_ui_url" default:""`
 	SupportEmail string `envconfig:"support_email" default:""`
 
-	SkipTlsVerification bool   `envconfig:"skip_tls_verification" default:"false"`
-	DirectoryApiToken   string `envconfig:"directory_api_token" default:""`
-	DirectoryApiUrl     string `envconfig:"directory_api_url" required:""`
+	SalesforceDomain         string `envconfig:"salesforce_domain"`
+	SalesforceConsumerKey    string `envconfig:"salesforce_consumer_key"`
+	SalesforceConsumerSecret string `envconfig:"salesforce_consumer_secret"`
 }
 
 type Flags struct {

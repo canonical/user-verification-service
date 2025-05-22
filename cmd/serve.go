@@ -13,9 +13,9 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/canonical/user-verification-service/internal/config"
-	directoryapi "github.com/canonical/user-verification-service/internal/directory_api"
 	"github.com/canonical/user-verification-service/internal/logging"
 	"github.com/canonical/user-verification-service/internal/monitoring/prometheus"
+	"github.com/canonical/user-verification-service/internal/salesforce"
 	"github.com/canonical/user-verification-service/internal/tracing"
 	"github.com/canonical/user-verification-service/pkg/web"
 )
@@ -45,9 +45,16 @@ func serve() {
 	monitor := prometheus.NewMonitor("user-verification-service", logger)
 	tracer := tracing.NewTracer(tracing.NewConfig(specs.TracingEnabled, specs.OtelGRPCEndpoint, specs.OtelHTTPEndpoint, logger))
 
-	directoryAPI := directoryapi.NewClient(specs.SkipTlsVerification, specs.DirectoryApiUrl, specs.DirectoryApiToken, tracer, monitor, logger)
+	salesforce := salesforce.NewClient(
+		specs.SalesforceDomain,
+		specs.SalesforceConsumerKey,
+		specs.SalesforceConsumerSecret,
+		tracer,
+		monitor,
+		logger,
+	)
 
-	router := web.NewRouter(specs.ErrorUiUrl, specs.SupportEmail, specs.ApiToken, specs.UiBaseURL, directoryAPI, tracer, monitor, logger)
+	router := web.NewRouter(specs.ErrorUiUrl, specs.SupportEmail, specs.ApiToken, specs.UiBaseURL, salesforce, tracer, monitor, logger)
 	logger.Infof("Starting server on port %v", specs.Port)
 
 	srv := &http.Server{

@@ -59,10 +59,10 @@ selfservice:
                         url: http://host.docker.internal:8080/api/v0/verify
                         body: base64://ZnVuY3Rpb24oY3R4KSB7CiAgZW1haWw6IGN0eC5pZGVudGl0eS50cmFpdHMuZW1haWwKfQ==
                         method: POST
-                        can_interrupt: true
                         emit_analytics_event: true
                         response:
                           ignore: false
+                          parse: true
                         auth:
                           type: api_key
                           config:
