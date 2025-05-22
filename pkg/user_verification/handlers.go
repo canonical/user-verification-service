@@ -109,6 +109,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(payload)
 }
 
 func NewAPI(service ServiceInterface, middleware *AuthMiddleware, logger logging.LoggerInterface) *API {
