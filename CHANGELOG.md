@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/canonical/user-verification-service/compare/v0.4.0...v0.4.1) (2025-05-23)
+
+
+### Bug Fixes
+
+* add noop client ([89c5d03](https://github.com/canonical/user-verification-service/commit/89c5d036bcc0eb06cf1a74b70f5fb2507485f90c))
+
 ## [0.4.0](https://github.com/canonical/user-verification-service/compare/v0.3.1...v0.4.0) (2025-05-22)
 
 
