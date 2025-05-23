@@ -17,6 +17,7 @@ type EnvSpec struct {
 	ErrorUiUrl   string `envconfig:"error_ui_url" default:""`
 	SupportEmail string `envconfig:"support_email" default:""`
 
+	SalesforceEnabled        bool   `envconfig:"salesforce_enabled" default:"true"`
 	SalesforceDomain         string `envconfig:"salesforce_domain"`
 	SalesforceConsumerKey    string `envconfig:"salesforce_consumer_key"`
 	SalesforceConsumerSecret string `envconfig:"salesforce_consumer_secret"`

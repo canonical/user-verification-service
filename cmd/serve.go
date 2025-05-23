@@ -45,16 +45,22 @@ func serve() {
 	monitor := prometheus.NewMonitor("user-verification-service", logger)
 	tracer := tracing.NewTracer(tracing.NewConfig(specs.TracingEnabled, specs.OtelGRPCEndpoint, specs.OtelHTTPEndpoint, logger))
 
-	salesforce := salesforce.NewClient(
-		specs.SalesforceDomain,
-		specs.SalesforceConsumerKey,
-		specs.SalesforceConsumerSecret,
-		tracer,
-		monitor,
-		logger,
-	)
+	var sf salesforce.SalesforceAPI
+	if specs.SalesforceEnabled {
+		sf = salesforce.NewClient(
+			specs.SalesforceDomain,
+			specs.SalesforceConsumerKey,
+			specs.SalesforceConsumerSecret,
+			tracer,
+			monitor,
+			logger,
+		)
+	} else {
+		logger.Warn("Using salesforce noop client, do not use this in production")
+		sf = salesforce.NewNoopClient(tracer, monitor, logger)
+	}
 
-	router := web.NewRouter(specs.ErrorUiUrl, specs.SupportEmail, specs.ApiToken, specs.UiBaseURL, salesforce, tracer, monitor, logger)
+	router := web.NewRouter(specs.ErrorUiUrl, specs.SupportEmail, specs.ApiToken, specs.UiBaseURL, sf, tracer, monitor, logger)
 	logger.Infof("Starting server on port %v", specs.Port)
 
 	srv := &http.Server{
