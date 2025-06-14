@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.2](https://github.com/canonical/user-verification-service/compare/v0.4.1...v0.4.2) (2025-06-14)
+
+
+### Bug Fixes
+
+* **deps:** update go deps ([481a50e](https://github.com/canonical/user-verification-service/commit/481a50ec3c88388e8dd5c37fb30ce1710f014937))
+* **deps:** update go deps (minor) ([6f36d54](https://github.com/canonical/user-verification-service/commit/6f36d54320cc49679450791ba2cf863b932ce9fa))
+
 ## [0.4.1](https://github.com/canonical/user-verification-service/compare/v0.4.0...v0.4.1) (2025-05-23)
 
 
