@@ -3,7 +3,7 @@ module github.com/canonical/user-verification-service
 go 1.24.0
 
 require (
-	github.com/go-chi/chi/v5 v5.2.1
+	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-chi/cors v1.2.1
 	github.com/k-capehart/go-salesforce/v2 v2.5.0
 	github.com/kelseyhightower/envconfig v1.4.0
