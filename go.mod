@@ -4,8 +4,8 @@ go 1.24.0
 
 require (
 	github.com/go-chi/chi/v5 v5.2.2
-	github.com/go-chi/cors v1.2.1
-	github.com/k-capehart/go-salesforce/v2 v2.5.0
+	github.com/go-chi/cors v1.2.2
+	github.com/k-capehart/go-salesforce/v2 v2.5.2
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/prometheus/client_golang v1.22.0
 	github.com/spf13/cobra v1.9.1
