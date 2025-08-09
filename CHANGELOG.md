@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.4.2](https://github.com/canonical/user-verification-service/compare/v0.4.1...v0.4.2) (2025-08-09)
+
+
+### Bug Fixes
+
+* **deps:** update go deps ([b27bc7d](https://github.com/canonical/user-verification-service/commit/b27bc7d47c7730d1b51c3598cd7fa4e5a23fb572))
+* **deps:** update go deps ([481a50e](https://github.com/canonical/user-verification-service/commit/481a50ec3c88388e8dd5c37fb30ce1710f014937))
+* **deps:** update go deps (minor) ([8645234](https://github.com/canonical/user-verification-service/commit/8645234b31e661393a2021f7a10d51aaf26b0a1d))
+* **deps:** update go deps (minor) ([6f36d54](https://github.com/canonical/user-verification-service/commit/6f36d54320cc49679450791ba2cf863b932ce9fa))
+* **deps:** update go deps to v1.37.0 ([63d7c0f](https://github.com/canonical/user-verification-service/commit/63d7c0f997cc5d3f8633e1d30fde269b02697ede))
+* **deps:** update go deps to v1.37.0 (minor) ([8c0a3f3](https://github.com/canonical/user-verification-service/commit/8c0a3f3a8be35bc9446ff6fdee071a9f164672e8))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.2.2 [security] ([5e9936f](https://github.com/canonical/user-verification-service/commit/5e9936fcc63b4b5a2458ebf96d861460126ac865))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.2.2 [security] ([4516ecf](https://github.com/canonical/user-verification-service/commit/4516ecf3b98efce1b54267f6f650d7da3075dcd5))
+* **deps:** update module github.com/prometheus/client_golang to v1.23.0 ([707c28f](https://github.com/canonical/user-verification-service/commit/707c28f7c893f36e85aa01b5fb25af18e45cf35a))
+* **deps:** update module github.com/prometheus/client_golang to v1.23.0 ([ac26426](https://github.com/canonical/user-verification-service/commit/ac2642644c9fb32ae463c93579226cb6b4d4d250))
+
 ## [0.4.1](https://github.com/canonical/user-verification-service/compare/v0.4.0...v0.4.1) (2025-05-23)
 
 
