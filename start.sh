@@ -47,7 +47,8 @@ export SUPPORT_EMAIL="support@email.com"
 export TRACING_ENABLED="false"
 export LOG_LEVEL="debug"
 export API_TOKEN="secret_api_key"
-export SALESFORCE_CONSUMER_KEY="change-me"
-export SALESFORCE_CONSUMER_SECRET="change-me"
-export SALESFORCE_DOMAIN="https://canonicalhr--staging.sandbox.my.salesforce.com"
+export SALESFORCE_DOMAIN="https://canonicalhr--staging2.sandbox.my.salesforce.com"
+export SALESFORCE_CONSUMER_KEY="****"
+export SALESFORCE_CONSUMER_SECRET="****"
+
 go run . serve
