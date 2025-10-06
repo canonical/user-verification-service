@@ -92,7 +92,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !isEmployee {
-		a.logger.Errorf("User '%v' is not an employee", payload.Email)
+		a.logger.Security().AuthzFailureNotEmployee(payload.Email, logging.WithRequest(r))
 		w.WriteHeader(http.StatusForbidden)
 		json.NewEncoder(w).Encode(
 			WebhookErrorResponse{

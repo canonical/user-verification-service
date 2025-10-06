@@ -58,10 +58,15 @@ func TestHandleVerify(t *testing.T) {
 			defer ctrl.Finish()
 
 			mockLogger := NewMockLoggerInterface(ctrl)
+			mockSecurityLogger := NewMockSecurityLoggerInterface(ctrl)
 			mockService := NewMockServiceInterface(ctrl)
 
 			if test.result != nil {
 				mockService.EXPECT().IsEmployee(gomock.Any(), test.input).Times(1).Return(test.result.r, test.result.err)
+				if !test.result.r && test.result.err == nil {
+					mockLogger.EXPECT().Security().Return(mockSecurityLogger)
+					mockSecurityLogger.EXPECT().AuthzFailureNotEmployee(gomock.Any(), gomock.Any()).AnyTimes()
+				}
 			}
 
 			if test.expectedStatus != http.StatusOK {
