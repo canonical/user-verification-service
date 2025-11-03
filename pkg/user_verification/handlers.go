@@ -51,63 +51,69 @@ func (a *API) RegisterEndpoints(mux *chi.Mux) {
 	mux.Post("/api/v0/verify", a.handleVerify)
 }
 
+// sendWebhookError writes a WebhookErrorResponse with the given status code
+func sendWebhookError(w http.ResponseWriter, statusCode int, errorID ErrorID, text string, instancePtr string) {
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(
+		WebhookErrorResponse{
+			Messages: []errorMessage{{
+				InstancePtr: instancePtr,
+				DetailedMessages: []detailedMessage{{
+					ID:   errorID,
+					Text: text,
+					Type: "error",
+				}},
+			}},
+		},
+	)
+}
+
+// parsePayload decodes the WebhookPayload from the request body
+func parsePayload(r *http.Request) (*WebhookPayload, error) {
+	var payload = new(WebhookPayload)
+	err := json.NewDecoder(r.Body).Decode(payload)
+	return payload, err
+}
+
+// verifyEmployee checks if the email belongs to an employee and handles security logging
+func (a *API) verifyEmployee(r *http.Request, email string) (bool, error) {
+	isEmployee, err := a.service.IsEmployee(r.Context(), email)
+	if err != nil {
+		a.logger.Errorf("Failed to check if user '%v' is employee: %v", email, err)
+		return false, err
+	}
+
+	if !isEmployee {
+		a.logger.Security().AuthzFailureNotEmployee(email, logging.WithRequest(r))
+	}
+
+	return isEmployee, nil
+}
+
 func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	var payload = new(WebhookPayload)
 
-	err := json.NewDecoder(r.Body).Decode(payload)
+	// Parse the payload
+	payload, err := parsePayload(r)
 	if err != nil {
 		a.logger.Error("Failed to parse payload: ", err)
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(
-			WebhookErrorResponse{
-				Messages: []errorMessage{{
-					DetailedMessages: []detailedMessage{{
-						ID:   InvalidPayload,
-						Text: "Invalid payload",
-						Type: "error",
-					}},
-				}},
-			},
-		)
+		sendWebhookError(w, http.StatusBadRequest, InvalidPayload, "Invalid payload", "")
 		return
 	}
 
-	isEmployee, err := a.service.IsEmployee(r.Context(), payload.Email)
+	// Verify the user is an employee
+	isEmployee, err := a.verifyEmployee(r, payload.Email)
 	if err != nil {
-		a.logger.Errorf("Failed to check if user '%v' is employee: %v", payload.Email, err)
-		w.WriteHeader(http.StatusForbidden)
-		json.NewEncoder(w).Encode(
-			WebhookErrorResponse{
-				Messages: []errorMessage{{
-					DetailedMessages: []detailedMessage{{
-						ID:   APICallFailure,
-						Text: "Failed to call the salesforce API",
-						Type: "error",
-					}},
-				}},
-			},
-		)
+		sendWebhookError(w, http.StatusForbidden, APICallFailure, "Failed to call the salesforce API", "")
 		return
 	}
 
 	if !isEmployee {
-		a.logger.Security().AuthzFailureNotEmployee(payload.Email, logging.WithRequest(r))
-		w.WriteHeader(http.StatusForbidden)
-		json.NewEncoder(w).Encode(
-			WebhookErrorResponse{
-				Messages: []errorMessage{{
-					InstancePtr: "#/traits/email",
-					DetailedMessages: []detailedMessage{{
-						ID:   NotFound,
-						Text: "User is not an employee",
-						Type: "error",
-					}},
-				}},
-			},
-		)
+		sendWebhookError(w, http.StatusForbidden, NotFound, "User is not an employee", "#/traits/email")
 		return
 	}
+
+	// Success: echo the original payload
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(payload)
 }
