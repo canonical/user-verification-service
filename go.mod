@@ -3,12 +3,12 @@ module github.com/canonical/user-verification-service
 go 1.24.0
 
 require (
-	github.com/go-chi/chi/v5 v5.2.2
-	github.com/go-chi/cors v1.2.1
-	github.com/k-capehart/go-salesforce/v2 v2.5.0
+	github.com/go-chi/chi/v5 v5.2.3
+	github.com/go-chi/cors v1.2.2
+	github.com/k-capehart/go-salesforce/v2 v2.5.2
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/prometheus/client_golang v1.23.0
-	github.com/spf13/cobra v1.10.1
+	github.com/prometheus/client_golang v1.23.2
+	github.com/spf13/cobra v1.10.2
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.63.0
 	go.opentelemetry.io/contrib/propagators/jaeger v1.38.0
 	go.opentelemetry.io/otel v1.38.0
@@ -19,7 +19,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.38.0
 	go.opentelemetry.io/otel/trace v1.38.0
 	go.uber.org/mock v0.6.0
-	go.uber.org/zap v1.27.0
+	go.uber.org/zap v1.27.1
 )
 
 require (
