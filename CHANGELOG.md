@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.4.2](https://github.com/canonical/user-verification-service/compare/v0.4.1...v0.4.2) (2026-01-17)
+
+
+### Bug Fixes
+
+* add security logging ([04835d6](https://github.com/canonical/user-verification-service/commit/04835d697fed396b0fbc3e96d8761afe7a90eba8))
+* **deps:** update go deps ([15bb0de](https://github.com/canonical/user-verification-service/commit/15bb0de7ae89cad5b08c5eca95ac264fb7d7959f))
+* **deps:** update go deps ([6e357ad](https://github.com/canonical/user-verification-service/commit/6e357adb1e977df0a398e1aa8e63da5301ef7c11))
+* **deps:** update go deps ([1941a0a](https://github.com/canonical/user-verification-service/commit/1941a0a767f28bbdf7cd087047fad017e8ba297f))
+* **deps:** update go deps ([b27bc7d](https://github.com/canonical/user-verification-service/commit/b27bc7d47c7730d1b51c3598cd7fa4e5a23fb572))
+* **deps:** update go deps ([481a50e](https://github.com/canonical/user-verification-service/commit/481a50ec3c88388e8dd5c37fb30ce1710f014937))
+* **deps:** update go deps (minor) ([70aa5fb](https://github.com/canonical/user-verification-service/commit/70aa5fba2457532affe173804c0be84f42f5af07))
+* **deps:** update go deps (minor) ([8645234](https://github.com/canonical/user-verification-service/commit/8645234b31e661393a2021f7a10d51aaf26b0a1d))
+* **deps:** update go deps (minor) ([6f36d54](https://github.com/canonical/user-verification-service/commit/6f36d54320cc49679450791ba2cf863b932ce9fa))
+* **deps:** update go deps (patch) ([#82](https://github.com/canonical/user-verification-service/issues/82)) ([1fac5da](https://github.com/canonical/user-verification-service/commit/1fac5da6276dc9f404c519aee31d3ff4c7f236bb))
+* **deps:** update go deps to v1.37.0 ([63d7c0f](https://github.com/canonical/user-verification-service/commit/63d7c0f997cc5d3f8633e1d30fde269b02697ede))
+* **deps:** update go deps to v1.37.0 (minor) ([8c0a3f3](https://github.com/canonical/user-verification-service/commit/8c0a3f3a8be35bc9446ff6fdee071a9f164672e8))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.2.2 [security] ([5e9936f](https://github.com/canonical/user-verification-service/commit/5e9936fcc63b4b5a2458ebf96d861460126ac865))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.2.2 [security] ([4516ecf](https://github.com/canonical/user-verification-service/commit/4516ecf3b98efce1b54267f6f650d7da3075dcd5))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.2.4 ([b92dff3](https://github.com/canonical/user-verification-service/commit/b92dff36292db17d0d5e602fc2561b6810237c55))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.2.4 ([#157](https://github.com/canonical/user-verification-service/issues/157)) ([c0984ef](https://github.com/canonical/user-verification-service/commit/c0984efd6209f8bf7409b4a932e84af3f7c00f3f))
+* **deps:** update module github.com/go-chi/cors to v1.2.2 ([0092321](https://github.com/canonical/user-verification-service/commit/00923219f99f0c5eaa7e8b4b36b3141659178f6b))
+* **deps:** update module github.com/go-chi/cors to v1.2.2 ([#154](https://github.com/canonical/user-verification-service/issues/154)) ([103b5a7](https://github.com/canonical/user-verification-service/commit/103b5a7e7daaae3681d80b158ebd3ec9066f2fb1))
+* **deps:** update module github.com/prometheus/client_golang to v1.23.0 ([707c28f](https://github.com/canonical/user-verification-service/commit/707c28f7c893f36e85aa01b5fb25af18e45cf35a))
+* **deps:** update module github.com/prometheus/client_golang to v1.23.0 ([ac26426](https://github.com/canonical/user-verification-service/commit/ac2642644c9fb32ae463c93579226cb6b4d4d250))
+* **deps:** update module github.com/spf13/cobra to v1.10.1 ([50757cc](https://github.com/canonical/user-verification-service/commit/50757cc018c95e6d91b6e7117f04b5ed98f15e0d))
+* **deps:** update module github.com/spf13/cobra to v1.10.1 ([c5b4058](https://github.com/canonical/user-verification-service/commit/c5b405810bbb543c5c1d00c8823ba5083c39b40e))
+* **deps:** update module go.uber.org/mock to v0.6.0 ([ec0ea57](https://github.com/canonical/user-verification-service/commit/ec0ea57706b8429efe6789655b50648df0868fc0))
+* **deps:** update module go.uber.org/mock to v0.6.0 ([2fe28fd](https://github.com/canonical/user-verification-service/commit/2fe28fda5ab1f95d743ad320ef4f638ae36f0510))
+* improve startup logic ([a895b75](https://github.com/canonical/user-verification-service/commit/a895b7560621ac2874447168af47f4c7cd11bc24))
+
 ## [0.4.1](https://github.com/canonical/user-verification-service/compare/v0.4.0...v0.4.1) (2025-05-23)
 
 
