@@ -1,3 +1,6 @@
+// Copyright 2026 Canonical Ltd
+// SPDX-License-Identifier: AGPL-3.0
+
 package version
 
 const Version = "0.4.1" // x-release-please-version
