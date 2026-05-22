@@ -2,8 +2,6 @@ module github.com/canonical/user-verification-service
 
 go 1.26.0
 
-toolchain go1.24.11
-
 require (
 	github.com/go-chi/chi/v5 v5.2.4
 	github.com/go-chi/cors v1.2.2
