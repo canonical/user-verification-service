@@ -1,6 +1,8 @@
 module github.com/canonical/user-verification-service
 
-go 1.26.0
+go 1.24.1
+
+toolchain go1.24.11
 
 require (
 	github.com/go-chi/chi/v5 v5.2.4
