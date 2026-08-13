@@ -19,6 +19,9 @@ jobs:
   build:
     uses: ./.github/workflows/build-and-test-rock.yaml
   gh-publish:
+    permissions:
+      packages: write
+      contents: read
     if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
     needs: [ build, unit-test ]
     uses: canonical/identity-team/.github/workflows/_rock-gh-publish.yaml@7ca109a149fd39d889d1f66f5d2727aafefc6915 # v1.9.1
@@ -26,6 +29,11 @@ jobs:
       rock: "user-verification-service"
       structure-tests-enabled: true
   scan:
+    permissions:
+      packages: read
+      contents: read
+      security-events: write
+      actions: read
     if: ${{ (github.ref == 'refs/heads/main') || (github.ref_type == 'tag') }}
     needs: gh-publish
     uses: canonical/identity-team/.github/workflows/_rock-scan.yaml@7ca109a149fd39d889d1f66f5d2727aafefc6915 # v1.9.1
