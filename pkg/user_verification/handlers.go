@@ -5,6 +5,7 @@ package user_verification
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/canonical/user-verification-service/internal/logging"
@@ -13,11 +14,15 @@ import (
 
 type ErrorID int
 
+// The login UI treats messages with an ID from 4200000 to 4299999 as a rejected
+// registration and shows their text on its error page.
 const (
 	InvalidPayload ErrorID = 4200000 + iota
 	APICallFailure
 	NotFound
 )
+
+const errorDescription = "Account could not be verified.\n\nPlease try to log in again or contact support"
 
 type WebhookPayload struct {
 	Email string `json:"email"`
@@ -44,6 +49,9 @@ type API struct {
 	service    ServiceInterface
 	middleware *AuthMiddleware
 
+	// errorText is shown to the user, the cause of the failure is only logged.
+	errorText string
+
 	logger logging.LoggerInterface
 }
 
@@ -67,7 +75,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 				Messages: []errorMessage{{
 					DetailedMessages: []detailedMessage{{
 						ID:   InvalidPayload,
-						Text: "Invalid payload",
+						Text: a.errorText,
 						Type: "error",
 					}},
 				}},
@@ -85,7 +93,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 				Messages: []errorMessage{{
 					DetailedMessages: []detailedMessage{{
 						ID:   APICallFailure,
-						Text: "Failed to call the salesforce API",
+						Text: a.errorText,
 						Type: "error",
 					}},
 				}},
@@ -103,7 +111,7 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 					InstancePtr: "#/traits/email",
 					DetailedMessages: []detailedMessage{{
 						ID:   NotFound,
-						Text: "User is not an employee",
+						Text: a.errorText,
 						Type: "error",
 					}},
 				}},
@@ -115,10 +123,14 @@ func (a *API) handleVerify(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(payload)
 }
 
-func NewAPI(service ServiceInterface, middleware *AuthMiddleware, logger logging.LoggerInterface) *API {
+func NewAPI(service ServiceInterface, supportEmail string, middleware *AuthMiddleware, logger logging.LoggerInterface) *API {
 	a := new(API)
 
 	a.service = service
+	a.errorText = errorDescription
+	if supportEmail != "" {
+		a.errorText = fmt.Sprintf("%v at %v", errorDescription, supportEmail)
+	}
 	if middleware != nil {
 		a.middleware = middleware
 	}

@@ -66,7 +66,7 @@ func serve() error {
 		sf = salesforce.NewNoopClient(tracer, monitor, logger)
 	}
 
-	router := web.NewRouter(specs.ErrorUiUrl, specs.SupportEmail, specs.ApiToken, specs.UiBaseURL, sf, tracer, monitor, logger)
+	router := web.NewRouter(specs.SupportEmail, specs.ApiToken, sf, tracer, monitor, logger)
 	logger.Infof("Starting server on port %v", specs.Port)
 
 	srv := &http.Server{
