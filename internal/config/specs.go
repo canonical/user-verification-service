@@ -13,11 +13,9 @@ type EnvSpec struct {
 
 	LogLevel string `envconfig:"log_level" default:"error"`
 
-	Port      int    `envconfig:"port" default:"8080"`
-	UiBaseURL string `envconfig:"ui_base_url" default:""`
+	Port int `envconfig:"port" default:"8080"`
 
 	ApiToken     string `envconfig:"api_token" default:""`
-	ErrorUiUrl   string `envconfig:"error_ui_url" default:""`
 	SupportEmail string `envconfig:"support_email" default:""`
 
 	SalesforceEnabled        bool   `envconfig:"salesforce_enabled" default:"true"`

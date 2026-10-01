@@ -24,28 +24,41 @@ func TestHandleVerify(t *testing.T) {
 	}
 
 	tests := []struct {
-		name  string
-		input string
+		name         string
+		input        string
+		supportEmail string
 
 		result *serviceResult
 
 		expectedStatus int
+		expectedError  *detailedMessage
 	}{
 		{
 			name:           "Should fail because no email provided",
 			expectedStatus: http.StatusBadRequest,
+			expectedError:  &detailedMessage{ID: InvalidPayload, Text: errorDescription, Type: "error"},
 		},
 		{
 			name:           "Should fail because is not employee",
 			input:          "not@employee.com",
 			result:         &serviceResult{r: false},
 			expectedStatus: http.StatusForbidden,
+			expectedError:  &detailedMessage{ID: NotFound, Text: errorDescription, Type: "error"},
+		},
+		{
+			name:           "Should fail with the support email in the error",
+			input:          "not@employee.com",
+			supportEmail:   "support@example.com",
+			result:         &serviceResult{r: false},
+			expectedStatus: http.StatusForbidden,
+			expectedError:  &detailedMessage{ID: NotFound, Text: errorDescription + " at support@example.com", Type: "error"},
 		},
 		{
 			name:           "Should fail because of service error",
 			input:          "not@employee.com",
 			result:         &serviceResult{err: errors.New("some error")},
 			expectedStatus: http.StatusForbidden,
+			expectedError:  &detailedMessage{ID: APICallFailure, Text: errorDescription, Type: "error"},
 		},
 		{
 			name:           "Should succeed",
@@ -84,7 +97,7 @@ func TestHandleVerify(t *testing.T) {
 			req := httptest.NewRequest(http.MethodPost, "/api/v0/verify", bytes.NewBuffer(body))
 
 			mux := chi.NewMux()
-			NewAPI(mockService, nil, mockLogger).RegisterEndpoints(mux)
+			NewAPI(mockService, test.supportEmail, nil, mockLogger).RegisterEndpoints(mux)
 			w := httptest.NewRecorder()
 
 			mux.ServeHTTP(w, req)
@@ -92,6 +105,22 @@ func TestHandleVerify(t *testing.T) {
 
 			if res.StatusCode != test.expectedStatus {
 				t.Fatalf("expected status to be %v not %v", test.expectedStatus, res.StatusCode)
+			}
+
+			if test.expectedError == nil {
+				return
+			}
+
+			var errorResponse WebhookErrorResponse
+			if err := json.NewDecoder(res.Body).Decode(&errorResponse); err != nil {
+				t.Fatalf("unexpected decode error: %v", err)
+			}
+			if len(errorResponse.Messages) != 1 || len(errorResponse.Messages[0].DetailedMessages) != 1 {
+				t.Fatalf("expected a single error message, got %v", errorResponse.Messages)
+			}
+			if actual := errorResponse.Messages[0].DetailedMessages[0]; actual.ID != test.expectedError.ID ||
+				actual.Text != test.expectedError.Text || actual.Type != test.expectedError.Type {
+				t.Fatalf("expected error to be %v not %v", *test.expectedError, actual)
 			}
 		})
 	}
