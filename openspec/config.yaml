@@ -1,0 +1,24 @@
+schema: spec-driven
+
+context: |
+  user-verification-service: User Verification Service for the Canonical Identity Platform.
+
+  Tech stack: Go (1.25+), Chi router, Cobra CLI, OpenTelemetry, Prometheus, optional Salesforce integration.
+
+  Core Architecture Components:
+  - pkg/user_verification: core user verification business logic
+  - pkg/web: HTTP router setup, wires services and middleware
+  - pkg/status, pkg/metrics: status and metrics endpoints
+  - internal/config: environment variable configuration specs
+  - internal/salesforce: optional external identity data provider integration
+  - cmd/: Cobra CLI commands (serve, version)
+
+  We follow Canonical Go best practices.
+  All Go source files must begin with the standard AGPL-3.0-only header.
+  Use conventional commits.
+
+  Product language:
+  - Write OpenSpec proposals and specs in user-facing product behavior language
+  - Requirements should describe the experience, observable behavior, and product contract
+  - Put internal mechanisms in design.md or tasks.md unless the mechanism is itself part of the user-facing contract
+  - Avoid technical jargon in proposals and specs when possible
