@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.1](https://github.com/canonical/user-verification-service/compare/v1.0.0...v1.0.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* **deps:** update go deps ([9a687c8](https://github.com/canonical/user-verification-service/commit/9a687c81b9afc80c4786c86598bac2381380bbf3))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.4.0 [security] ([deff918](https://github.com/canonical/user-verification-service/commit/deff9180078e5feeb7ef0bb7cb27c8f723652657))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.5.0 ([e20784a](https://github.com/canonical/user-verification-service/commit/e20784a240a4669d0b8f01ed6e92d65e0d1b4ef8))
+* **deps:** update module github.com/go-chi/chi/v5 to v5.5.0 ([#197](https://github.com/canonical/user-verification-service/issues/197)) ([41b2e18](https://github.com/canonical/user-verification-service/commit/41b2e183189e705cb0928a0bef0875421d12d275))
+
 ## [1.0.0](https://github.com/canonical/user-verification-service/compare/v0.4.1...v1.0.0) (2026-10-01)
 
 
